@@ -1,6 +1,6 @@
 # csvtojson
 
-This code read all the csv files in a base directory and write them into a json file "inputspec.json". Each csv file is considered as data from separate cite. 
+This code read all the csv files in a directory and write them into a json file "inputspec.json". Each csv file is considered as data from separate cite. 
 # Arguments
  &nbsp;&nbsp; directory : the directory that contains all the csv files \
  &nbsp;&nbsp; lambda: the value for lambda \
