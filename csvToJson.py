@@ -8,6 +8,7 @@ Created on Tue Aug  4 12:48:48 2020
 import glob
 import pandas as pd
 import sys
+import json
 
 
 def get_input():
@@ -21,7 +22,7 @@ def get_input():
     return base_dir, lambda_, type_of_data, data_values
 
 
-def read_csv_files(base_dir, lambda_, type_of_data, data_values):
+def csv_to_json(base_dir, lambda_, type_of_data, data_values):
     """read the csv files and convert their data into a string of json format,
     first column in the csv files is considered as index column and the rest of
     columns are considered as covariates"""
@@ -32,22 +33,25 @@ def read_csv_files(base_dir, lambda_, type_of_data, data_values):
         with open(file) as csvFile:
             data = pd.read_csv(csvFile)
             data = data.set_index(data.columns[0])
-            json_content += "\n{\n \"covariates\":{\n \"value\": {\n"
-            columns = data.columns
-            for i in list(data.index):
-                json_content += "\t \t \""+str(i)+"\":{"
-                for column in columns:
-                    json_content += "\n \t \""+column+"\":\""+str(data.loc[i][column])+"\","
-                json_content = json_content[:-1]
-                json_content += "},\n"
-            json_content = json_content[:-2]
-            json_content += "}},\n \"data\":{\"fulfilled\":true,\n\t"
-            json_content += "\"value\":[ {\n \t \"type\":\""+type_of_data+"\",\n \t\"value\":[\n"
-            for i in data_values:
-                json_content += "\t \""+str(i)+"\",\n"
-            json_content = json_content[:-2]
-            json_content += "]\n \t} ]"
-            json_content += "},\n\"lambda\":{\"fulfilled\":true,\n \t\"value\":"+lambda_+"}\n},"
+            data_ = data.to_json(orient="index")
+            data_parsed = json.loads(data_)
+            json_dict = {
+                    "covariates":{ 
+                            "value": data_parsed
+                            },
+                    "data":{
+                            "fulfilled": True,
+                            "value": {
+                                    "type": type_of_data,
+                                    "value": data_values
+                                    }
+                            },
+                    "lambda":{
+                             "fulfilled": True,
+                             "value": int(lambda_)
+                             }
+                    }
+            json_content += json.dumps(json_dict, indent=4) + ","
     json_content = json_content[:-1]
     json_content += "\n ]"
     return json_content
@@ -55,12 +59,12 @@ def read_csv_files(base_dir, lambda_, type_of_data, data_values):
 
 def writ_to_json(jsonFilename, json_content):
     """writes json_content which is a string into a json file"""
-    with open(jsonFilename, 'w') as jsonFile:
+    with open(json_filename, 'w') as jsonFile:
         jsonFile.write(json_content)
 
 
 if __name__ == '__main__':
     base_dir, lambda_, type_of_data, data_values = get_input()
-    json_content = read_csv_files(base_dir, lambda_, type_of_data, data_values)
-    jsonFilename = base_dir+"inputspec.json"
-    writ_to_json(jsonFilename, json_content)
+    json_content = csv_to_json(base_dir, lambda_, type_of_data, data_values)
+    json_filename = base_dir + "inputspec.json"
+    writ_to_json(json_filename, json_content)
