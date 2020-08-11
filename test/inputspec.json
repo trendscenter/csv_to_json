@@ -1,0 +1,31 @@
+[{
+    "covariates": {
+        "value": {
+            "subject0": {
+                "attribute0": 3.0,
+                "attribute1": 12.0
+            },
+            "subject1": {
+                "attribute0": 1.2,
+                "attribute1": 10.9
+            }
+        }
+    },
+    "data": {
+        "fulfilled": true,
+        "value": {
+            "type": [
+                "float"
+            ],
+            "value": [
+                "attribute0",
+                "attribute1"
+            ]
+        }
+    },
+    "lambda": {
+        "fulfilled": true,
+        "value": 0
+    }
+}
+]
