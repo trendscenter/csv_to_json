@@ -1,4 +1,4 @@
-# csvtojson
+# csv_to_json
 
 This code read all the csv files inside a directory and write them into a json file "inputspec.json". Each csv file is considered as data from separate site. \
 type_of_data and data_vars in the arguments should be seperated by a comma (put space before and after comma).
